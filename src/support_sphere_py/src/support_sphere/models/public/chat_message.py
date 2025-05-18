@@ -4,7 +4,7 @@ from typing import Optional
 from support_sphere.models.base import BasePublicSchemaModel
 from sqlmodel import Field, Relationship
 from geoalchemy2 import Geometry
-
+from datetime import datetime
 
 class ChatMessage(BasePublicSchemaModel, table=True):
     """
@@ -40,25 +40,26 @@ class ChatMessage(BasePublicSchemaModel, table=True):
     __tablename__ = "messages"
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    createdAt: int | None = Field(nullable=True)
+    createdAt: datetime = Field(nullable=False)
     metadata: str | None = Field(nullable=True)
     duration: int | None = Field(nullable=True)
     mimeType: str | None = Field(nullable=True)
     name: str | None = Field(nullable=True)
     remoteId: str | None = Field(nullable=True)
-    repliedMessage: str | None = Field(nullable=True)
-    roomId: uuid.UUID = Field(foreign_key="public.clusters.id")
+    replied_message: str | None = Field(nullable=True)
     showStatus: bool | None = Field(nullable=True)
     size: int | None = Field(nullable=True)
     status: str | None = Field(nullable=True)
     type: str | None = Field(nullable=True)
-    updatedAt: int | None = Field(nullable=True)
+    updatedAt: datetime = Field(nullable=True)
     uri: str | None = Field(nullable=True)
     waveForm: str | None = Field(nullable=True)
     isLoading: bool | None = Field(nullable=True)
     height: float | None = Field(nullable=True)
     width: float | None = Field(nullable=True)
-    previewData: str | None = Field(nullable=True)
-    authorId: uuid.UUID = Field(default_factory=uuid.uuid4)
+    preview_data: str | None = Field(nullable=True)
+    author_id: uuid.UUID = Field(foreign_key="auth.users.id")
     text: str | None = Field(nullable=True)
+
+    rooom: Optional["ChatRoom"] = Relationship(back_populates="chat_room", cascade_delete=False)
 
